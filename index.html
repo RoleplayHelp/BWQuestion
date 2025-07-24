@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +13,7 @@
       --primary: #a678dd;
       --secondary: #4ecdc4;
       --danger: #ff6b6b;
-      --card-bg: #1a1a1e;
+      --card-bg: rgba(26, 26, 30, 0.8);
       --button-bg: #2c2c34;
       --button-text: #f0f0f0;
     }
@@ -32,7 +32,6 @@
     }
 
     .container {
-      background-color: rgba(26, 26, 30, 0.6);
       background-color: var(--card-bg);
       border-radius: 12px;
       box-shadow: 0 0 30px rgba(166, 120, 221, 0.2);
@@ -89,10 +88,22 @@
     .icon {
       margin-right: 0.5rem;
     }
+
+    .intro {
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      color: #ddd;
+      line-height: 1.7;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <p class="intro">
+      👋 <strong>Chào mừng bạn đến với Blasphemous War!</strong><br />
+      Đây là một server <em>dark fantasy</em> thiên về RP có chiều sâu và hệ thống combat bằng chỉ số.
+      Để đảm bảo bạn sẽ enjoy trải nghiệm tại đây, hãy dành chút thời gian hoàn thành vài câu hỏi trắc nghiệm ngắn nhé!
+    </p>
     <h1><i class="fas fa-dragon icon"></i>Blasphemous War Entrance<i class="fas fa-skull-crossbones icon"></i></h1>
     <div id="question" class="question"></div>
     <div class="btn-group" id="answers"></div>
@@ -100,7 +111,7 @@
   </div>
 
   <script>
-    const serverLink = 'https://discord.gg/sAE9gFSXbK';
+    const serverLink = 'https://discord.gg/your-server-link'; // Thay link server tại đây
     const tree = {
       q1: {
         text: '🧠 Bạn có biết đây là một server dark fantasy – combat sử dụng chỉ số và không sử dụng may rủi không?',
@@ -133,7 +144,7 @@
         no: 'end_reject_4'
       },
       q5: {
-        text: '📜 Cốt truyện của server khá dài, có khởi đầu và kết thúc, thậm chí có nhiều kết thúc khác nhau tuỳ theo lựa chọn của bạn. Bạn có sẵn sàng đồng hành không?',
+        text: '📜 Câu chuyện server kéo dài và có kết thúc. Bạn có sẵn sàng đồng hành không?',
         answers: {
           yes: () => endWithLink('🎉 Cảm ơn bạn đã sẵn sàng đồng hành!'),
           maybe: () => endWithLink('✨ Không sao cả, vào thử xem vibe có hợp không nha!'),
