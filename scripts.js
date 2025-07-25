@@ -1,6 +1,6 @@
-const serverLink = 'https://discord.gg/6ZyU2xHs'; // Thay bằng link thật
+const serverLink = 'https://discord.gg/my-link-here';
 
-const tree = {
+const questionTree = {
   q1: {
     text: '🧠 Bạn có biết đây là một server dark fantasy – combat sử dụng chỉ số và không sử dụng may rủi không?',
     yes: 'q2a',
@@ -17,7 +17,7 @@ const tree = {
     no: 'end_reject_1'
   },
   q3a: {
-    text: '🧩 Bạn có cảm thấy thoải mái khi phân tích tình huống chiến đấu logic thay vì tung xúc xắc để quyết định?',
+    text: '🧩 Trong chiến đấu, bạn sẽ phân tích logic các tình huống để role, admin luôn sẵn sàng hỗ trợ bạn chỉ cần bạn hỏi. Điều này có khiến bạn muốn trải nghiệm server của tụi mình không?',
     yes: 'q4',
     no: 'end_reject_2'
   },
@@ -27,12 +27,12 @@ const tree = {
     no: 'end_reject_3'
   },
   q4: {
-    text: '🛠️ Hệ thống kỹ năng sẽ do bạn tự xây dựng theo trí tưởng tượng của mình trong khuôn khổ admin cho phép. Admin sẽ gợi ý và giúp bạn hoàn thiện nếu cần.',
+    text: '🛠️ Ở Blasphemous War, kỹ năng của nhân vật sẽ được xây dựng theo trí tưởng tượng của bạn miễn là nằm trong khuôn khổ và luật admin đã đề ra. Admin rất sẵn sàng hỗ trợ bạn trong việc xây dựng kỹ năng nếu bạn nhờ. Bạn có thấy ổn với điều này không?',
     yes: 'q5',
     no: 'end_reject_4'
   },
   q5: {
-    text: '📜 Câu chuyện của server có khởi đầu, kết thúc và nhiều nhánh tùy lựa chọn. Bạn có sẵn sàng đồng hành không?',
+    text: '📜 Cốt truyện của server sẽ dài, có khởi đầu, kết thúc và nhiều nhánh tùy lựa chọn. Bạn có sẵn sàng đồng hành không?',
     answers: {
       yes: () => endWithLink('🎉 Cảm ơn bạn đã sẵn sàng đồng hành!'),
       maybe: () => endWithLink('✨ Không sao cả, vào thử xem vibe có hợp không nha!'),
@@ -41,72 +41,105 @@ const tree = {
   }
 };
 
-const messages = {
+const rejectionMessages = {
   end_reject_1: '❌ Có vẻ server thiên về chỉ số và logic không hợp với bạn. Cảm ơn vì đã ghé qua!',
   end_reject_2: '🤔 Nếu không thích phân tích logic, có thể bạn sẽ không enjoy server này lắm. Cảm ơn bạn.',
   end_reject_3: '📚 Không sao cả! Nếu sau này bạn muốn học thử hệ thống chỉ số, cứ ghé lại nhé.',
   end_reject_4: '⚠️ Server thiên về sáng tạo kỹ năng cá nhân, nên nếu không hợp thì rất tiếc nha.',
-  end_reject_5: '💬 Có vẻ bạn không muốn theo cốt truyện dài hạn. Tụi mình vẫn luôn chào đón nếu bạn đổi ý!'
+  end_reject_5: '💬 Có vẻ bạn không muốn theo cốt truyện dài. Tụi mình vẫn luôn chào đón nếu bạn đổi ý!'
 };
 
-function endWithLink(msg) {
-  document.getElementById('question').innerHTML = msg;
-  document.getElementById('answers').innerHTML = `<a href="${serverLink}" target="_blank"><button><i class='fas fa-scroll'></i> Tham gia Server</button></a>`;
-}
-
-function render(id) {
+function setFadeEffectBefore(callback) {
   const container = document.querySelector('.container');
   container.classList.remove('visible');
 
-  setTimeout(() => {
-    const node = tree[id];
+  setTimeout(callback, 400); // Delay để hoàn tất fade-out
+}
+
+function render(questionId) {
+  setFadeEffectBefore(() => {
+    const node = questionTree[questionId];
     if (!node) return;
 
-    document.getElementById('question').innerText = node.text;
+    const question = document.getElementById('question');
     const answersDiv = document.getElementById('answers');
+    const endDiv = document.getElementById('end');
+
+    question.innerText = node.text;
     answersDiv.innerHTML = '';
+    endDiv.innerText = '';
 
     if (node.answers) {
-      const btns = [
-        { label: '✅ Có', next: node.answers.yes },
-        { label: '🤔 Chưa chắc', next: node.answers.maybe },
-        { label: '🚫 Không', next: node.answers.no }
-      ];
-      btns.forEach(({ label, next }) => {
-        const btn = document.createElement('button');
-        btn.textContent = label;
-        btn.onclick = () => {
-          if (typeof next === 'function') next();
-          else end(next);
-        };
-        answersDiv.appendChild(btn);
-      });
+      renderMultiAnswers(node.answers);
     } else {
-      const yesBtn = document.createElement('button');
-      yesBtn.innerHTML = '<i class="fas fa-check"></i> Yes';
-      yesBtn.onclick = () => render(node.yes);
-      const noBtn = document.createElement('button');
-      noBtn.innerHTML = '<i class="fas fa-times"></i> No';
-      noBtn.onclick = () => {
-        const next = node.no;
-        if (typeof next === 'string' && next.startsWith('end')) end(next);
-        else render(next);
-      };
-      answersDiv.appendChild(yesBtn);
-      answersDiv.appendChild(noBtn);
+      renderBinaryAnswers(node.yes, node.no);
     }
 
-    container.classList.add('visible');
-  }, 300);
+    document.querySelector('.container').classList.add('visible');
+  });
 }
 
-function end(code) {
-  document.getElementById('question').innerText = '';
-  document.getElementById('answers').innerHTML = '';
-  document.getElementById('end').innerText = messages[code] || 'Cảm ơn bạn đã tham gia.';
+function renderBinaryAnswers(yesTarget, noTarget) {
+  const answersDiv = document.getElementById('answers');
+
+  const yesBtn = createButton('<i class="fas fa-check"></i> Yes', () => handleNext(yesTarget));
+  const noBtn = createButton('<i class="fas fa-times"></i> No', () => handleNext(noTarget));
+
+  answersDiv.appendChild(yesBtn);
+  answersDiv.appendChild(noBtn);
 }
 
-// Intro animation
+function renderMultiAnswers(options) {
+  const answersDiv = document.getElementById('answers');
+
+  const yesBtn = createButton('✅ Có', () => handleNext(options.yes));
+  const maybeBtn = createButton('🤔 Chưa chắc', () => handleNext(options.maybe));
+  const noBtn = createButton('🚫 Không', () => handleNext(options.no));
+
+  answersDiv.appendChild(yesBtn);
+  answersDiv.appendChild(maybeBtn);
+  answersDiv.appendChild(noBtn);
+}
+
+function createButton(label, onClick) {
+  const btn = document.createElement('button');
+  btn.innerHTML = label;
+  btn.onclick = onClick;
+  return btn;
+}
+
+function handleNext(target) {
+  if (typeof target === 'function') {
+    target();
+  } else if (typeof target === 'string' && target.startsWith('end')) {
+    showEndMessage(target);
+  } else {
+    render(target);
+  }
+}
+
+function endWithLink(message) {
+  setFadeEffectBefore(() => {
+    const question = document.getElementById('question');
+    const answers = document.getElementById('answers');
+    const endDiv = document.getElementById('end');
+
+    question.innerHTML = message;
+    answers.innerHTML = `<a href="${serverLink}" target="_blank"><button><i class='fas fa-scroll'></i> Tham gia Server</button></a>`;
+    endDiv.innerText = '';
+    document.querySelector('.container').classList.add('visible');
+  });
+}
+
+function showEndMessage(code) {
+  setFadeEffectBefore(() => {
+    document.getElementById('question').innerText = '';
+    document.getElementById('answers').innerHTML = '';
+    document.getElementById('end').innerText = rejectionMessages[code] || 'Cảm ơn bạn đã tham gia.';
+    document.querySelector('.container').classList.add('visible');
+  });
+}
+
 window.onload = () => {
   setTimeout(() => {
     document.getElementById('introScreen').style.display = 'none';
