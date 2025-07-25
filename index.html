@@ -1,104 +1,19 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blasphemous War - Entrance Test</title>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --bg-color: #0e0e10;
-      --text-color: #c9c9c9;
-      --primary: #a678dd;
-      --secondary: #4ecdc4;
-      --danger: #ff6b6b;
-      --card-bg: rgba(26, 26, 30, 0.8);
-      --button-bg: #2c2c34;
-      --button-text: #f0f0f0;
-    }
-
-    body {
-      font-family: 'Unbounded', sans-serif;
-      background: url('Background.png') no-repeat center center fixed;
-      background-size: cover;
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 1rem;
-    }
-
-    .container {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(166, 120, 221, 0.2);
-      padding: 2.5rem;
-      max-width: 750px;
-      width: 100%;
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    h1 {
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      font-size: 1.8rem;
-    }
-
-    .question {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      word-break: break-word;
-    }
-
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    button {
-      background-color: var(--button-bg);
-      color: var(--button-text);
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-      min-width: 140px;
-    }
-
-    button:hover {
-      background-color: var(--primary);
-      color: #fff;
-      transform: translateY(-2px);
-    }
-
-    .end-message {
-      font-size: 1.1rem;
-      margin-top: 2rem;
-      color: var(--danger);
-    }
-
-    .icon {
-      margin-right: 0.5rem;
-    }
-
-    .intro {
-      font-size: 1.05rem;
-      margin-bottom: 2rem;
-      color: #ddd;
-      line-height: 1.7;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
+  <div class="intro-screen" id="introScreen">
+    <div class="intro-text">⚔️ Welcome to Blasphemous War ⚔️<br><span>Prepare yourself...</span></div>
+  </div>
+
+  <div class="container hidden" id="mainContent">
     <p class="intro">
       👋 <strong>Chào mừng bạn đến với Blasphemous War!</strong><br />
       Đây là một server <em>dark fantasy</em> thiên về RP có chiều sâu và hệ thống combat bằng chỉ số.
@@ -110,109 +25,6 @@
     <div id="end" class="end-message"></div>
   </div>
 
-  <script>
-    const serverLink = 'https://discord.gg/your-server-link'; // Thay link server tại đây
-    const tree = {
-      q1: {
-        text: '🧠 Bạn có biết đây là một server dark fantasy – combat sử dụng chỉ số và không sử dụng may rủi không?',
-        yes: 'q2a',
-        no: 'q2b'
-      },
-      q2a: {
-        text: '⚔️ Bạn đã từng roleplay combat chỉ số bao giờ chưa?',
-        yes: 'q3a',
-        no: 'q3b'
-      },
-      q2b: {
-        text: '📐 Blasphemous War là một server sử dụng chỉ số và logic thực tế (khoảng 70%) để combat chứ không dùng đến các tính chất may rủi, bạn có thấy ổn với điều này không?',
-        yes: 'q2a',
-        no: 'end_reject_1'
-      },
-      q3a: {
-        text: '🧩 Bạn có cảm thấy thoải mái khi phân tích tình huống chiến đấu logic thay vì tung xúc xắc để quyết định?',
-        yes: 'q4',
-        no: 'end_reject_2'
-      },
-      q3b: {
-        text: '📘 Bạn có sẵn sàng học cách sử dụng chỉ số để xử lý tình huống trong RP không? Đừng lo, admin luôn sẵn sàng hỗ trợ từng bước nếu bạn cần – từ ví dụ đơn giản cho đến hướng dẫn chi tiết.',
-        yes: 'q4',
-        no: 'end_reject_3'
-      },
-      q4: {
-        text: '🛠️ Kỹ năng của nhân vật sẽ do bạn tự xây dựng theo trí tưởng tượng của mình, trong khuôn khổ admin cho phép, bạn có muốn thử chứ? Tất nhiên dàn admin sẽ hỗ trợ bạn nhiệt tình vì đây là một mảng khó mà XD.',
-        yes: 'q5',
-        no: 'end_reject_4'
-      },
-      q5: {
-        text: '📜 Server có cốt truyện dài, có khởi đầu và kết thúc, thậm chí là nhiều kết thúc tuỳ theo lựa chọn của các bạn, bạn có sẵn sàng tham gia chứ?',
-        answers: {
-          yes: () => endWithLink('🎉 Cảm ơn bạn đã sẵn sàng đồng hành!'),
-          maybe: () => endWithLink('✨ Không sao cả, vào thử xem vibe có hợp không nha!'),
-          no: 'end_reject_5'
-        }
-      }
-    };
-
-    const messages = {
-      end_reject_1: '❌ Có vẻ server thiên về chỉ số và logic không hợp với bạn. Cảm ơn vì đã ghé qua!',
-      end_reject_2: '🤔 Nếu không thích phân tích logic, có thể bạn sẽ không enjoy server này lắm. Cảm ơn bạn.',
-      end_reject_3: '📚 Không sao cả! Nếu sau này bạn muốn học thử hệ thống chỉ số, cứ ghé lại nhé.',
-      end_reject_4: '⚠️ Server thiên về sáng tạo kỹ năng cá nhân, nên nếu bạn không hợp thì đành vậy, không sao cả.',
-      end_reject_5: '💬 Có vẻ bạn không muốn theo cốt truyện dài hạn. Tụi mình vẫn luôn chào đón nếu bạn đổi ý!'
-    };
-
-    function endWithLink(msg) {
-      document.getElementById('question').innerHTML = msg;
-      document.getElementById('answers').innerHTML = `<a href="${serverLink}" target="_blank"><button><i class='fas fa-scroll'></i> Tham gia Server</button></a>`;
-    }
-
-    function render(id) {
-      const node = tree[id];
-      if (!node) return;
-
-      document.getElementById('question').innerText = node.text;
-      const answersDiv = document.getElementById('answers');
-      answersDiv.innerHTML = '';
-
-      if (node.answers) {
-        const btns = [
-          { label: '✅ Có', next: node.answers.yes },
-          { label: '🤔 Chưa chắc', next: node.answers.maybe },
-          { label: '🚫 Không', next: node.answers.no }
-        ];
-
-        btns.forEach(({ label, next }) => {
-          const btn = document.createElement('button');
-          btn.textContent = label;
-          btn.onclick = () => {
-            if (typeof next === 'function') next();
-            else end(next);
-          };
-          answersDiv.appendChild(btn);
-        });
-      } else {
-        const yesBtn = document.createElement('button');
-        yesBtn.innerHTML = '<i class="fas fa-check"></i> Yes';
-        yesBtn.onclick = () => render(node.yes);
-        const noBtn = document.createElement('button');
-        noBtn.innerHTML = '<i class="fas fa-times"></i> No';
-        noBtn.onclick = () => {
-          const next = node.no;
-          if (typeof next === 'string' && next.startsWith('end')) end(next);
-          else render(next);
-        };
-        answersDiv.appendChild(yesBtn);
-        answersDiv.appendChild(noBtn);
-      }
-    }
-
-    function end(code) {
-      document.getElementById('question').innerText = '';
-      document.getElementById('answers').innerHTML = '';
-      document.getElementById('end').innerText = messages[code] || 'Cảm ơn bạn đã tham gia.';
-    }
-
-    render('q1');
-  </script>
+  <script src="scripts.js"></script>
 </body>
 </html>
